@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } f
 import Home from './pages/Home';
 import './App.css';
 
-function Login({ onLogin }) {
+function Login({ onDataLogin }) {
   const [username, setUsername] = useState('admin@yousearch.com');
   const [password, setPassword] = useState('pass@123');
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ function Login({ onLogin }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (username.trim() && password.trim()) {
-      onLogin();
+      onDataLogin();
       navigate('/home');
     }
   };
@@ -36,7 +36,7 @@ function Login({ onLogin }) {
         }}>
           <p style={{ margin: '0 0 6px 0', fontWeight: 'bold' }}>🔑 Demo Login Details:</p>
           <p style={{ margin: '0 0 4px 0' }}><strong>User ID:</strong> admin@yousearch.com</p>
-          <p style={{ margin: 0 }}><strong>Password:</strong> password123</p>
+          <p style={{ margin: 0 }}><strong>Password:</strong> pass@123</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
@@ -103,12 +103,19 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          {/* Automatically redirect root URL '/' to '/login' or '/home' depending on auth */}
+          <Route 
+            path="/" 
+            element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />} 
+          />
+
           <Route
             path="/login"
             element={
-              isAuthenticated ? <Navigate to="/home" replace /> : <Login onLogin={handleLogin} />
+              isAuthenticated ? <Navigate to="/home" replace /> : <Login onDataLogin={handleLogin} />
             }
           />
+          
           <Route
             path="/home"
             element={
@@ -121,6 +128,24 @@ function App() {
               )
             }
           />
+
+          {/* Optional: Placeholder for the 'My Notes' link in your navbar */}
+          <Route
+            path="/notes"
+            element={
+              isAuthenticated ? (
+                <ProtectedLayout onLogout={handleLogout}>
+                  <div style={{ padding: '40px', textAlign: 'center' }}>
+                    <h2>My Notes Page</h2>
+                  </div>
+                </ProtectedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+
+          {/* Catch-all route */}
           <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />} />
         </Routes>
       </div>
