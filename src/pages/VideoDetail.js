@@ -3,18 +3,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const fallbackVideos = [
-  { id: '1', title: 'Full Stack Web Development Course 2024', videoUrl: 'https://www.youtube.com/embed/nu_pCVPKzTk' },
-  { id: '2', title: 'Node.js & Express.js Full Course', videoUrl: 'https://www.youtube.com/embed/Oe421EPjeBE' },
-  { id: '3', title: 'React.js Full Course for Beginners', videoUrl: 'https://www.youtube.com/embed/bMknfKXIFA8' },
-  { id: '4', title: 'MongoDB Crash Course for Beginners', videoUrl: 'https://www.youtube.com/embed/ofme2o290GE' },
-  { id: '5', title: 'Python for Beginners - Full Course', videoUrl: 'https://www.youtube.com/embed/_uQrJ0TkZlc' },
-  { id: '6', title: 'REST API Design Best Practices', videoUrl: 'https://www.youtube.com/embed/-MTSQjw5DrM' },
-  { id: '7', title: 'Learn CSS Grid & Flexbox in 20 Minutes', videoUrl: 'https://www.youtube.com/embed/rg7Fvvl3taU' },
-  { id: '8', title: 'Figma UI Design Tutorial for Beginners', videoUrl: 'https://www.youtube.com/embed/c9Wg6Cb_YlU' },
-  { id: '9', title: 'Docker Tutorial for Beginners', videoUrl: 'https://www.youtube.com/embed/pTFZFxd4hOI' },
-  { id: '10', title: 'Git and GitHub Tutorial for Beginners', videoUrl: 'https://www.youtube.com/embed/RGOj5yH7evk' },
-  { id: '11', title: 'JavaScript DOM Manipulation Course', videoUrl: 'https://www.youtube.com/embed/5fb2aPlgoys' },
-  { id: '12', title: 'Kubernetes Course - Full Beginners Tutorial', videoUrl: 'https://www.youtube.com/embed/X48VuDVv0do' }
+  { id: '1', title: 'Full Stack Web Development Course 2024', videoUrl: 'https://www.youtube.com/embed/nu_pCVPKzTk', thumbnailUrl: 'https://img.youtube.com/vi/nu_pCVPKzTk/hqdefault.jpg' },
+  { id: '2', title: 'Node.js & Express.js Full Course', videoUrl: 'https://www.youtube.com/embed/Oe421EPjeBE', thumbnailUrl: 'https://img.youtube.com/vi/Oe421EPjeBE/hqdefault.jpg' },
+  { id: '3', title: 'React.js Full Course for Beginners', videoUrl: 'https://www.youtube.com/embed/bMknfKXIFA8', thumbnailUrl: 'https://img.youtube.com/vi/bMknfKXIFA8/hqdefault.jpg' },
+  { id: '4', title: 'MongoDB Crash Course for Beginners', videoUrl: 'https://www.youtube.com/embed/ofme2o290GE', thumbnailUrl: 'https://img.youtube.com/vi/ofme2o290GE/hqdefault.jpg' },
+  { id: '5', title: 'Python for Beginners - Full Course', videoUrl: 'https://www.youtube.com/embed/_uQrJ0TkZlc', thumbnailUrl: 'https://img.youtube.com/vi/_uQrJ0TkZlc/hqdefault.jpg' },
+  { id: '6', title: 'REST API Design Best Practices', videoUrl: 'https://www.youtube.com/embed/-MTSQjw5DrM', thumbnailUrl: 'https://img.youtube.com/vi/-MTSQjw5DrM/hqdefault.jpg' },
+  { id: '7', title: 'Learn CSS Grid & Flexbox in 20 Minutes', videoUrl: 'https://www.youtube.com/embed/rg7Fvvl3taU', thumbnailUrl: 'https://img.youtube.com/vi/rg7Fvvl3taU/hqdefault.jpg' },
+  { id: '8', title: 'Figma UI Design Tutorial for Beginners', videoUrl: 'https://www.youtube.com/embed/c9Wg6Cb_YlU', thumbnailUrl: 'https://img.youtube.com/vi/c9Wg6Cb_YlU/hqdefault.jpg' },
+  { id: '9', title: 'Docker Tutorial for Beginners', videoUrl: 'https://www.youtube.com/embed/pTFZFxd4hOI', thumbnailUrl: 'https://img.youtube.com/vi/pTFZFxd4hOI/hqdefault.jpg' },
+  { id: '10', title: 'Git and GitHub Tutorial for Beginners', videoUrl: 'https://www.youtube.com/embed/RGOj5yH7evk', thumbnailUrl: 'https://img.youtube.com/vi/RGOj5yH7evk/hqdefault.jpg' },
+  { id: '11', title: 'JavaScript DOM Manipulation Course', videoUrl: 'https://www.youtube.com/embed/5fb2aPlgoys', thumbnailUrl: 'https://img.youtube.com/vi/5fb2aPlgoys/hqdefault.jpg' },
+  { id: '12', title: 'Kubernetes Course - Full Beginners Tutorial', videoUrl: 'https://www.youtube.com/embed/X48VuDVv0do', thumbnailUrl: 'https://img.youtube.com/vi/X48VuDVv0do/hqdefault.jpg' }
 ];
 
 function VideoDetail() {
@@ -25,7 +25,7 @@ function VideoDetail() {
   const [inputNote, setInputNote] = useState('');
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/videos/${id}`)
+    axios.get(`/api/videos/${id}`)
       .then((res) => setVideo(res.data))
       .catch(() => {
         const found = fallbackVideos.find((v) => v.id === id);
@@ -44,7 +44,7 @@ function VideoDetail() {
     setInputNote('');
   };
 
-  if (!video) return <div className="loading" style={{ padding: '40px', textAlign: 'center' }}>Loading video...</div>;
+  if (!video) return <div className="loading" style={{ padding: '40px', textAlign: 'center', color: '#f8fafc' }}>Loading video...</div>;
 
   return (
     <div className="video-page-container">
@@ -52,8 +52,6 @@ function VideoDetail() {
       <h2>{video.title}</h2>
       
       <iframe
-        width="100%"
-        height="480"
         src={video.videoUrl}
         title={video.title}
         frameBorder="0"

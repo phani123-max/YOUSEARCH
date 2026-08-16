@@ -1,92 +1,47 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const API_KEY = 'AIzaSyA4Yrp5eDKHUIHnbRHmfjWA7iinTyposHU';
-
-const TAB_QUERIES = {
-  Home: 'trending videos',
-  Trending: 'trending music and news',
-  Gaming: 'gaming trailers highlights'
-};
+// Generates an array of exactly 80 video items
+const DUMMY_VIDEOS = Array.from({ length: 80 }, (_, index) => {
+  const id = index % 2 === 0 ? 'dQw4w9WgXcQ' : '3JZ_D3ELwOQ';
+  const categories = ['Trending Music & Shorts', 'Gaming Highlights & Walkthroughs', 'Java & Python Programming Tips', 'Tech News & Updates'];
+  const category = categories[index % categories.length];
+  
+  return {
+    id: id,
+    title: `Yousearch Video #${index + 1}: ${category}`,
+    thumbnailUrl: `https://images.unsplash.com/photo-${1500000000000 + (index * 12345)}?w=500&auto=format&fit=crop&q=60`,
+    channelLogo: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=60',
+    channelName: `Creator ${index + 1}`,
+    publishedAt: `${(index % 11) + 1} days ago`
+  };
+});
 
 function Home() {
   const [showBanner, setShowBanner] = useState(true);
   const [activeTab, setActiveTab] = useState('Home');
   const [searchQuery, setSearchQuery] = useState('');
-  const [videos, setVideos] = useState([]);
-  const [nextPageToken, setNextPageToken] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [videos, setVideos] = useState(DUMMY_VIDEOS);
   const [selectedVideoId, setSelectedVideoId] = useState(null);
-
-  const fetchYouTubeVideos = async (query, pageToken = '') => {
-    if (!API_KEY) return;
-
-    setIsLoading(true);
-    try {
-      const endpoint = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=12&type=video&q=${encodeURIComponent(
-        query
-      )}&key=${API_KEY}${pageToken ? `&pageToken=${pageToken}` : ''}`;
-
-      const response = await fetch(endpoint);
-      const data = await response.json();
-
-      if (data.items) {
-        const formattedVideos = data.items.map((item) => ({
-          id: item.id.videoId,
-          title: item.snippet.title,
-          thumbnailUrl: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.medium?.url,
-          channelLogo: item.snippet.thumbnails.default?.url,
-          channelName: item.snippet.channelTitle,
-          publishedAt: new Date(item.snippet.publishedAt).toLocaleDateString()
-        }));
-
-        setVideos((prev) => (pageToken ? [...prev, ...formattedVideos] : formattedVideos));
-        setNextPageToken(data.nextPageToken || '');
-      }
-    } catch (error) {
-      console.error('Error fetching YouTube videos:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchYouTubeVideos(TAB_QUERIES.Home);
-  }, []);
 
   const handleTabChange = (tabName) => {
     setActiveTab(tabName);
     setSearchQuery('');
-    setNextPageToken('');
-    fetchYouTubeVideos(TAB_QUERIES[tabName] || tabName);
+    setVideos(DUMMY_VIDEOS);
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (!searchQuery.trim()) return;
-    setNextPageToken('');
-    fetchYouTubeVideos(searchQuery);
+    if (!searchQuery.trim()) {
+      setVideos(DUMMY_VIDEOS);
+      return;
+    }
+    const filtered = DUMMY_VIDEOS.filter(v => 
+      v.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      v.channelName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setVideos(filtered.length > 0 ? filtered : DUMMY_VIDEOS);
   };
-
-  const loadMore = useCallback(() => {
-    if (isLoading || !nextPageToken) return;
-    const currentQuery = searchQuery.trim() || TAB_QUERIES[activeTab] || 'videos';
-    fetchYouTubeVideos(currentQuery, nextPageToken);
-  }, [isLoading, nextPageToken, searchQuery, activeTab]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop + 200 >=
-        document.documentElement.offsetHeight
-      ) {
-        loadMore();
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadMore]);
 
   return (
     <div className="nxt-layout">
@@ -164,7 +119,7 @@ function Home() {
               onClick={() => setSelectedVideoId(video.id)}
             >
               <div className="thumb-container">
-                <img src={video.thumbnailUrl} alt={video.title} className="card-thumb" />
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=60" alt={video.title} className="card-thumb" />
               </div>
               <div className="card-details">
                 <img src={video.channelLogo} alt={video.channelName} className="channel-avatar" />
@@ -191,12 +146,6 @@ function Home() {
                 allowFullScreen
               ></iframe>
             </div>
-          </div>
-        )}
-
-        {isLoading && (
-          <div style={{ textAlign: 'center', padding: '20px 0', color: '#64748b' }}>
-            <p>Loading more videos...</p>
           </div>
         )}
       </main>
