@@ -1353,3 +1353,47 @@ button:active {
     padding: 5px !important;
   }
 }
+
+@media screen and (max-width: 768px) {
+  
+  .sidebar, .left-sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    z-index: 1000;
+    height: 100vh;
+    width: 250px !important;
+    background-color: #white;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+  }
+
+  
+  .sidebar.active, .left-sidebar.open, .sidebar-open {
+    left: 0 !important;
+  }
+
+  
+  .content, .main-content, .home-container {
+    width: 100% !important;
+    margin-left: 0 !important;
+    padding: 10px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  
+  .video-grid, .videos-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100% !important;
+  }
+
+  .video-card {
+    width: 95% !important;
+    max-width: 450px;
+    margin: 10px auto !important;
+  }
+}
