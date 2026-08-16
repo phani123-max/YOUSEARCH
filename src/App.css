@@ -1324,3 +1324,32 @@ button:active {
 .banner-btn:active {
   transform: scale(0.97);
 }
+
+@media screen and (max-width: 768px) {
+ 
+  .app-container, .home-container, .main-layout {
+    flex-direction: column !important;
+    display: block !important;
+  }
+
+ 
+  .sidebar, .left-sidebar {
+    width: 100% !important;
+    position: relative !important;
+    height: auto !important;
+    box-shadow: none !important;
+  }
+
+
+  .content, .main-content {
+    width: 100% !important;
+    margin-left: 0 !important;
+    padding: 10px !important;
+  }
+
+  
+  .banner, .video-grid {
+    width: 100% !important;
+    padding: 5px !important;
+  }
+}
